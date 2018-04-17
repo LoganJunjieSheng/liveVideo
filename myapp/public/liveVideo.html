@@ -7,33 +7,110 @@
 </head>
 
 <body>
-<div>
+<div class="m-head">
     <div class="g-doc">
-        <button id="connect-sdk">登陆直播室</button>
-        <button id="create">创建房间</button>
-        <button id="open">开启摄像头</button>
-        <button id="change">切换角色</button>
-
-
-        <div id="chatroom-anonymous">
-            <button id="start">开启摄像头</button>
+        <div class="logo item">聊天室demo</div>
+        <div class="nav item">
+            <a href="../index.html">DEMO首页</a>
         </div>
-        <div class="m-room" id="room">
-            <div class="g-left">
-                <div class="media" id="one">
-                    <img src="" class="hide">
+        <div class="nav item">
+            <a href="./list.html">聊天室首页</a>
+        </div>
+        <div class="info item">
+            <img src="/TtaiWeb/static/webdemo/im/chatroom/images/default-icon.png" alt="头像" id="avatar">
+            <!--a href="./roomManage.html" id="nickName">匿名</a-->
+            <span id="nickName">匿名</span>
+            <a href="./login.html" id="chatroom-login">登录</a>
+            <a id="chatroom-logout">注销</a>
+        </div>
+        <div class="action item">
+            <a href="./anchor.html">
+                <b class="icon"></b>我要当主播</a>
+        </div>
+    </div>
+</div>
+<div class="g-doc">
+    <div class="m-room" id="room">
+        <div class="g-left">
+            <div class="info">
+                <div class="avatar">
+                    <img class="image" id="roomAvatar"
+                         src="/TtaiWeb/static/webdemo/im/chatroom/images/default-icon.png"/>
                 </div>
+                <div class="detail">
+                    <p class="title" id="roomTitle">房间名</p>
+                    <p class="desc">主播：
+                        <span id="roomCreator"></span>&nbsp;&nbsp;在线人数：
+                        <span id="roomOnlineMemberNum"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="media" id="one">
+                <img src="" class="hide">
+            </div>
+            <div class="media" id="two">
+                <img src="" class="hide">
+            </div>
+        </div>
+        <div class="g-right">
+
+            <div class="announcement_title">
+                直播公告
+            </div>
+            <div class="announcement" id="roomAnnouncement">
+            </div>
+            <ul class="tab">
+                <li class="crt j-tab" data-value="chat">直播互动</li>
+                <li class="j-tab" data-value="member">在线成员</li>
+            </ul>
+            <div class="chat j-pannel j-chat">
+            </div>
+            <div class="member j-pannel hide">
+                <div class="list j-member">
+                </div>
+                <div class="more j-more">
+                    <a>加载更多</a>
+                </div>
+            </div>
+            <div id="chatroom-verified">
+                <div class="edit">
+                    <textarea class="editText" id="editText" placeholder="Ctrl+Enter快速发送"></textarea>
+                </div>
+                <div class="sendBtn">
+                    <div id="emojiTag"></div>
+                    <a class="u-btn btn" id="sentText">发送</a>
+                    <a class="btn custom" id="customBtn"></a>
+                    <a class="btn emoji" id="emoji"></a>
+                </div>
+            </div>
+            <div id="chatroom-anonymous">
+                <button id="connect-sdk">登陆直播室</button>
+            </div>
+            <div id="chatroom-anonymous">
+                <button id="create">创建房间</button>
+            </div>
+            <div id="chatroom-anonymous">
+                <button id="open">开启摄像头</button>
+            </div>
+
+            <div id="chatroom-anonymous">
+                <button id="change">切换角色</button>
+            </div>
+
+
+            <div id="chatroom-anonymous">
+                <button id="start">开启摄像头</button>
             </div>
         </div>
     </div>
-    <div id="menu" class="m-menu" style="display:none">
-        <ul>
-            <li class="j-item j-kick" data-type="0" title="移除直播室">踢人</li>
-            <li class="j-item j-gag" data-type="1" title="禁止发言">禁言</li>
-            <li class="j-item j-black" data-type="2" title="永久不能进入该直播间">拉黑该用户</li>
-            <li class="j-item admin j-admin" data-type="3">任命管理员</li>
-        </ul>
-    </div>
+</div>
+<div id="menu" class="m-menu" style="display:none">
+    <ul>
+        <li class="j-item j-kick" data-type="0" title="移除直播室">踢人</li>
+        <li class="j-item j-gag" data-type="1" title="禁止发言">禁言</li>
+        <li class="j-item j-black" data-type="2" title="永久不能进入该直播间">拉黑该用户</li>
+        <li class="j-item admin j-admin" data-type="3">任命管理员</li>
+    </ul>
 </div>
 <script src="./javascripts/NIM_Web_NIM_v5.0.0.js"></script>
 <script src="./javascripts/NIM_Web_WebRTC_v5.0.0.js"></script>
@@ -42,15 +119,15 @@
 
 
 <script type="text/javascript">
-    var config={
+    var config = {
         //TpGuest
         // ip:'http://192.168.0.133:8081',
         //ttai
         // ip:'http://192.168.43.172:8081',
         // 外网
-        // ip:'https://www.wosieger.com'
+        ip: 'https://www.wosieger.com'
         //https
-        ip:'https://www.jiehuhu.top',
+        // ip: 'https://www.jiehuhu.top',
         // https:'https://192.168.0.133'
 
     }
@@ -61,6 +138,10 @@
     var $appkey;//购买的网易云服务的id，用来计费
     var $userId;//自己数据库以及网易数据的id
     var $wyToken;//网易云的token
+    var $siegerChannelName = Cookies.get('siegerChannelName');//房间号
+    var $siegerRoomId = Cookies.get('siegerRoomId')
+    console.log($siegerRoomId)
+    console.log($siegerRole)
     window.onload = function () {
         var param = new URLSearchParams();//https://www.jianshu.com/p/042632dec9fb 适配spring mvc
         param.append("role", $siegerRole);
@@ -74,9 +155,11 @@
         })
             .then(function (res) {
                 console.log(res.data)
-                $appkey=res.data.appkey;
-                $userId=res.data.userid;
-                $wyToken=res.data.token;
+                $appkey = res.data.appkey;
+                $userId = res.data.userid;
+                $wyToken = res.data.token;
+                connectSDK();
+                InintWebSDK()
             })
 
 
@@ -84,7 +167,7 @@
             var data = {};
             // 注意这里, 引入的 SDK 文件不一样的话, 你可能需要使用 SDK.NIM.getInstance 来调用接口
             var appkey = $appkey;
-            var account =  $userId//userid 每个用户在自己数据库与网易数据库一致
+            var account = $userId//userid 每个用户在自己数据库与网易数据库一致
             var token = $wyToken//网易token
             nim = NIM.getInstance({
                 debug: true,
@@ -161,7 +244,7 @@
                 custom: '测试自定义数据', //可选
                 webrtcEnable: true // 是否支持WebRTC方式接入，可选，默认为不开启
             }).then(function (obj) {
-                alert('创建房间成功');
+                console.log('创建房间成功');
                 // 预定房间成功后的上层逻辑操作
                 // eg: 初始化房间UI显示
                 // eg: 加入房间
@@ -170,64 +253,25 @@
         };
 
 
-        //切换角色
-        function changeRoom() {
-            // 切换为互动者
-            netcall = this.netcall
-            netcall.changeRoleToPlayer().then(function (obj) {
-                console.log('切换成功，当前角色', obj)
-                alert('切换摄像头成功')
-            })
-        };
-
-
-        //切换角色
-        function start() {
-            // 切换为互动者
-            netcall = this.netcall
-            var Netcall = WebRTC;
-
-            netcall.startDevice({
-                type: Netcall.DEVICE_TYPE_AUDIO_IN
-            })
-                .then(function () {
-                    // 通知对方自己开启了麦克风
-                    netcall.control({
-                        command: Netcall.NETCALL_CONTROL_COMMAND_NOTIFY_AUDIO_ON
-                    })
-                })
-                .catch(function (err) {
-                    console.log('启动麦克风失败')
-                    console.log(err)
-                })
-
-            // 开启摄像头
-            netcall.startDevice({
-                type: Netcall.DEVICE_TYPE_VIDEO,
-                width: 640,
-                height: 480
-            })
-                .then(function () {
-                    // 通知对方自己开启了摄像头
-                    netcall.control({
-                        command: Netcall.NETCALL_CONTROL_COMMAND_NOTIFY_VIDEO_ON
-                    })
-                })
-                .catch(function (err) {
-                    // 通知对方自己的摄像头不可用
-                    netcall.control({
-                        command: Netcall.NETCALL_CONTROL_COMMAND_SELF_CAMERA_INVALID
-                    })
-                    console.log('启动摄像头失败')
-                    console.error(err)
-                })
-
-        };
-
-
         //进入房间
         function GetInRoom() {
-            alert('进入房间')
+            //如果是学生，根据roomid判断房间人数
+            if ($siegerRole === 'student') {
+                var param = new URLSearchParams();//https://www.jianshu.com/p/042632dec9fb 适配spring mvc
+                param.append('roomid', $siegerRoomId);
+                axios({
+                    method: 'post',
+                    url: config.ip + '/TtaiWeb/course/checkroom',
+                    // headers: {
+                    //     'token': $siegerToken
+                    // },
+                    data: param
+                })
+                    .then(function (res) {
+                        console.log(res)
+                    })
+            }
+            console.log('进入房间')
             netcall = this.netcall
             var Netcall = WebRTC;
             const sessionConfig = {
@@ -248,9 +292,24 @@
                 type: Netcall.NETCALL_TYPE_VIDEO,
                 sessionConfig: sessionConfig
             }).then(function (obj) {
-
-                var roomid = netcall.channelId
-                alert('当前房间的id是' + roomid)
+                //如果是老师进入房间，更新roomid
+                if ($siegerRole === 'teacher') {
+                    var roomid = netcall.channelId
+                    var param = new URLSearchParams();//https://www.jianshu.com/p/042632dec9fb 适配spring mvc
+                    alert(roomid)
+                    param.append(roomid, roomid);
+                    axios({
+                        method: 'post',
+                        url: config.ip + '/web/roomid',
+                        headers: {
+                            'token': $siegerToken
+                        },
+                        data: param
+                    })
+                        .then(function (res) {
+                            console.log(res.data)
+                        })
+                }
 
                 // 开启麦克风
                 return netcall.startDevice({
@@ -266,7 +325,7 @@
                         // 开启摄像头
                         return netcall.startDevice({
                             type: Netcall.DEVICE_TYPE_VIDEO,
-                            width: 750,
+                            width: 400,
                             height: 480
                         })
                             .catch(function (err) {
@@ -305,8 +364,8 @@
                 //在回调里监听对方加入通话，并显示对方的视频画面
                 netcall.on('joinChannel', function (obj) {
                     console.log('user join', obj)
-                    alert('有人进来啦啦啦啦')
-                    alert('哈哈哈哈哈哈哈哈')
+                    console.log('有人进来啦啦啦啦')
+                    console.log('哈哈哈哈哈哈哈哈')
                     // 播放对方声音
                     netcall.startDevice({
                         type: Netcall.DEVICE_TYPE_AUDIO_OUT_CHAT
@@ -319,7 +378,7 @@
                         account: obj.account,
                         node: document.getElementById('two')
                     })
-                    alert('预览视频成功')
+                    console.log('预览视频成功')
                     // 设置对方预览画面大小
                     netcall.setVideoViewRemoteSize({
                         account: 'testAccount',
@@ -330,7 +389,7 @@
                 })
 
 
-                alert('222222222')
+                console.log('222222222')
 
                 // 在回调里监听对方加入通话，并显示对方的视频画面
                 netcall.on('joinChannel', function (obj) {
@@ -361,13 +420,17 @@
         };
 
 
-        document.getElementById('connect-sdk').addEventListener('click',
+        document.getElementById('create').addEventListener('click',
             function () {
-                connectSDK(); //链接sdk
-                InintWebSDK(); //初始化sdk
+                console.log($siegerRole)
+                if ($siegerRole === 'teacher') {
+                    InintRoom(); //创建房间
+                    console.log('创建房间成功')
+                } else {
+                    console.log('我是学生，无法创建房间')
+                }
 
             });
-
 
         document.getElementById('open').addEventListener('click',
             function () {
@@ -376,25 +439,6 @@
 
             });
 
-
-        document.getElementById('create').addEventListener('click',
-            function () {
-
-                InintRoom(); //创建房间
-
-            });
-
-
-        document.getElementById('change').addEventListener('click',
-            function () {
-                changeRoom(); //创建房间
-            });
-
-
-        document.getElementById('start').addEventListener('click',
-            function () {
-                start(); //创建房间
-            });
 
     };
 </script>
