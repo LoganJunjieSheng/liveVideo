@@ -1,8 +1,30 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background: #4e5359 url(../../images/bg.png) repeat 0 0;
 }
 
-a {
-  color: #01B7FF;
+.room-out {
+    width: 1200px;
+    margin: 0 auto;
+    background-color: #4e5359;
+}
+
+.my-player1 {
+    /*background-color: #0070d9;*/
+    height: 500px;
+    position: relative;
+}
+
+.my-player1 div {
+    width: 100% !important;
+}
+
+.my-player2 {
+    /*background-color: gray;*/
+    height: 500px;
+    position: relative;
+
+}
+
+.my-player2 > div {
+    width: 100% !important;
 }
